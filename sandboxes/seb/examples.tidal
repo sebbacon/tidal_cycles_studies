@@ -1,0 +1,165 @@
+d1 $ sound "arpy cp arpy:2"
+d2 $ sound "sn sn:2 bd sn"
+
+solo 2
+
+-- now only the second pattern will be playing
+
+unsolo 2
+
+-- now both will be playing, again
+
+mute 2
+
+-- now only the first pattern will be playing
+
+unmute 2 -- (or unmuteAll)
+
+-- now both will be playing
+hush
+
+
+setcps 0.0625
+
+
+-- simple amen loop
+d2 $ s "amencutup*32" # n (run 32)
+
+-- random panning but in cycles
+d1 $ slow 5 $ s "amencutup*32" # n (run 32) # pan (repeatCycles 2 $ irand 2)
+
+-- filtering as vowel sounds in random cycles
+d1 $ slow 5 $ s "amencutup*32" # n (run 32) # vowel (repeatCycles 4 $ choose ["i", "o"])
+
+-- randomise all the beats
+d1 $ slow 5 $ s "amencutup*32" # n (shuffle 32 $ run 32)
+
+-- randomise every 4
+d1 $ slow 5 $ s "amencutup*32" # n (every 2 (shuffle 2) $ run 32)
+
+
+d1 $ slow 5 $ s "numbers*8" # n (every 4 (shuffle 2) $ run 8)
+
+d1 $ slow 5 $ s "amencutup*32" # n (concat $ map (shuffle 4) (chunk 4 $ run 32))
+
+
+d1 $ slow 5 $ s "amencutup*32" # n (chunk 4 (shuffle) $ run 32)
+
+d1 $ s "amencutup" # n (run 32)
+d1  $ s "superpiano" $ n (chunk 4 (shuffle) $ run 32)
+d1 $ s "superpiano" # n "0 1 2 3"
+d1 $ slow 5 $ s "amencutup*32" # n (chunk 4 (shuffle) $ run 32)
+d1 $ slow 5 $ s "amencutup*32" # n (chunk 4 (shuffle $ run 32))
+d1 $ slow 5 $ s "amencutup*32" # n (segment 4 $ shuffle $ run 32)
+d1 $ slow 5 $ s "amencutup*32" # n (segment 4 $ shuffle 32 (run 32))
+d1 $ slow 5 $ s "amencutup*32" # n (segment 4 $ shuffle $ fmap fromIntegral (run 32))
+
+d1 $ slow 5 $ s "amencutup*32" # n (shuffle 32 $ run 32)
+
+shuffle 4chunk 4 (run 32))
+d1 $ stack [
+  -- Kick drum with a quick, fast pattern
+  s "bd*8" # speed "1.2" # gain "1.2",
+  
+  -- Amen break chopped into sections for variation and complexity
+  s "amencutup:0 [~ amencutup:1]*2 [amencutup:2 ~ amencutup:3]" 
+    # speed "1.5" # gain "1.1" # cut 1,
+  
+  -- Adding a snare with syncopation
+  s "sn:1(3,8)" 
+    # speed "1.1" # gain "1.0" # cut 2,
+  
+  -- Hi-hats for rhythmic texture, rapid repetition
+  s "[hh*16]" 
+    # speed "1.5" # gain "0.8" # pan "0.2 0.8"
+]
+  # cps 0.9
+  # lpf 1000
+  # hpf 200
+  # room 0.4
+
+
+d1 $ stack [
+  s "bd*8"   -- Proper indentation for items in the stack
+  , s "sn(3,8)"
+  , s "hh*8"
+]
+
+
+anticipate 1 $ sound "jvbass(3,8)"
+
+anticipate 1 $ sound "bd sn" # delay "0.5" # room "0.3"
+
+d1 $ sound "bd sn" # delay "0.5" # room "0.3"
+
+p "drums" $ s "bd(3,8) drum*4"
+let drums = s "bd(3,8) drum*4"
+xfade "drums" $ s "arpy*8" # n (run 8)
+d1 $ drums
+
+s "bd(3,8)"
+xfade 3 $ s "arpy*4"
+
+d1 $ slow 5 $ s "arpy*32" # n (run 32)
+d1 $ s "bd(3,8) drum*4"
+xfade 1 $ s "arpy*8" # n (run 8)
+d1 $ jux rev $ off 0.25 (|+ 7) $ struct (iter 4 "t(5,8)")  $ n (scale "ritusen" "0 .. 7") # sound "superpiano"
+d1 $ n (arp "<up down diverge>" "<a'm9'8 e'7sus4'8>") # sound "superpiano"
+d1 $ n (scale "ritusen" "0 .. 7") # sound "superpiano"
+d1 $ n (arpg "'major7 [0, 4]") # sound "superpiano"
+d1 $ chunk 4 (|- n 12) $ (n "0 2 4 7" # sound "superpiano")
+d1 $ rolled $ n "<a'm9'8 e'7sus4'8>" # sound "superpiano"
+d1 $ n "c'min9'o" # sound "superpiano"
+d1 $ chunk 4 (fast 2 . (|- n 12)) 
+  $ off 0.25 (|+ 7) 
+  $ struct (iter 4 "t(5,8)") 
+  $ n (scale "ritusen" "0 .. 7") 
+  # sound "superpiano"
+d1 $ stack [ note "<d4 c4 a3 bf3>" # s "bass1:18" # legato 1 # metatune 1 , note "[~ d5'min'o]*4" # s "superpiano" # release 0.4 ] # cps 0.35
+
+hush
+d1 $ jux rev $ chunk 4 (fast 2 . (|- n 12)) $ off 0.25 (|+ 7) $ struct (iter 4 "t(5,8)") $ n (scale "ritusen" "0 .. 7") # sound "superpiano"
+d1 $ sound "bev"
+d1 $ sound "bev ~" # cut 1
+d2 $ slow 4 $ sound "pebbles ~" # cut 1
+-- wait a bit, then..
+hush
+d1 $ sound "bev" # cut 1
+d1 $ sound "bd(3,8,2)"
+d1 $ sound "bd sn:2? bd sn?"
+d1 $ sometimes (# speed "2") $ sound "drum*8"
+d1 $ n (run 4) # sound "arpy"
+d1 $ sound "[voodoo voodoo:3, arpy arpy:4 arpy:2]"
+d1 $ sound "{voodoo voodoo:3, arpy arpy:4 arpy:2}"
+
+d1 $ sound "{bd sn, can:2 can:3 can:1, arpy arpy:1 arpy:2 arpy:3 arpy:5}"
+d1 $ s "moog" # n "<0 1 2>" # legato 1 # cutoffbus 1 (segment 32 $ range 200 2400 $ saw) # resonance 0.2
+d1 $ s "bd*8" # pan (slow 4 $ sine)|
+d1 $ s "moog*16" # n "<0 1 2>" # legato 1 # cutoff (range 200 2400 $ saw) # resonance 0.2
+d1 $ sound "jvbass [jvbass jvbass] jvbass ~" # iter 3 (note "1 [3 5] 7")
+d1 $ sound "jvbass [jvbass jvbass] jvbass ~" # note "1 [3 5] 7"
+d1 $ sound "arpy" # pan "0 0.5 1"
+d1 $ jux (rev) $ sound "arpy arpy:1 arpy:2 arpy:3"
+
+d1 $ every 4 (# vowel "a o") $ sound "arpy arpy:1 arpy:2 arpy:3"
+
+d1 $ iter 4 $ sound "arpy arpy:1 arpy:2 arpy:3"
+
+d1 $ palindrome $ sound "arpy arpy:1 arpy:2 arpy:3"
+
+d1 $ hurry 3 $ sound "arpy arpy arpy:1 arpy:2"
+d1 $ sound "numbers:1 numbers:2 numbers:3 numbers:4" # pan "0 0.5 1"
+
+d1 $ sound "cp" # delay 0.8 # delaytime (1/6) # delayfeedback 0.6 # lock 1
+
+d1 $ sound "industrial:3*4" # delay "<0 0.4 0.8>" # delaytime "0.2 0.05" # delayfeedback "<0.5 0.9>" # lock 1
+
+d1 $ sound "[~ sn]*2" # dry 0.4 # room 0.6 # size 0.8
+
+d1 $ sound "tabla*4" # n "0 1 2 3" # cutoff 400 # resonance 0.2
+
+d2 $ sound "arpy arpy:1 arpy:2 arpy:3"
+d1 $ slow 2 $ sound "arpy arpy:1 arpy:2 arpy:3"
+d1 $ fast 2 $ sound "arpy arpy:1 arpy:2 arpy:3"
+
+d1 $ jux (rev . (slow 1.5)) $ sound "arpy arpy:1 arpy:2 arpy:3"
